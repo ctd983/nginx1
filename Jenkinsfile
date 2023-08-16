@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker {
-            image 'maven:3.5.0' // Replace with your desired Docker image name
+            image 'latest' // Replace with your desired Docker image name
             args '-v /var/run/docker.sock:/var/run/docker.sock'
         }
     }
