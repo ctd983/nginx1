@@ -27,5 +27,5 @@ pipeline {
             sh 'docker image rm nginx1-image'
         }
     }
-}
+
 
