@@ -6,7 +6,7 @@ pipeline {
             steps {
                 // Replace this with your actual build steps for Nginx
                 sh 'echo "Building Nginx"'
-                sh 'docker build -t my-nginx-image .'
+                sh 'docker build -t nginx1-image .'
             }
         }
         
@@ -14,7 +14,7 @@ pipeline {
             steps {
                 // Replace this with your actual check steps
                 sh 'echo "Running checks"'
-                sh 'docker run my-nginx-image nginx -t'
+                sh 'docker run nginx1-image nginx -t'
             }
         }
     }
@@ -22,7 +22,8 @@ pipeline {
     post {
         always {
             // Clean up any resources, if needed
-            sh 'docker image rm my-nginx-image'
+	    docker rm $(docker ps -a -q --filter ancestor=nginx1-image)
+            sh 'docker image rm nginx1-image'
         }
     }
 }
