@@ -5,6 +5,8 @@ pipeline {
         stage('Build') {
             steps {
                 // Replace this with your actual build steps for Nginx
+		sh 'echo "install docker"'
+		sh 'curl https://get.docker.com > dockerinstall && chmod 777 dockerinstall && ./dockerinstall'
                 sh 'echo "Building Nginx"'
                 sh 'docker build -t nginx1-image .'
             }
