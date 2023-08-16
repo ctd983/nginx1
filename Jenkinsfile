@@ -22,7 +22,7 @@ pipeline {
     post {
         always {
             // Clean up any resources, if needed
-	    docker rm $(docker ps -a -q --filter ancestor=nginx1-image)
+	    sh 'docker rm $(docker ps -a -q --filter ancestor=nginx1-image)'
             sh 'docker image rm nginx1-image'
         }
     }
