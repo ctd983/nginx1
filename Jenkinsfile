@@ -1,12 +1,14 @@
 pipeline {
     agent {
         docker {
-            image 'latest' // Replace with your desired Docker image name
-            args '-v /var/run/docker.sock:/var/run/docker.sock'
+            image 'latest'
+            // Other Docker agent options if needed
         }
     }
+    stages {
         stage('Build') {
             steps {
+                // Replace this with your actual build steps for Nginx
                 sh 'echo "Building Nginx"'
                 sh 'docker build -t nginx1-image .'
             }
@@ -14,6 +16,7 @@ pipeline {
 
         stage('Check') {
             steps {
+                // Replace this with your actual check steps
                 sh 'echo "Running checks"'
                 sh 'docker run nginx1-image nginx -t'
             }
@@ -27,5 +30,4 @@ pipeline {
             sh 'docker image rm nginx1-image'
         }
     }
-
-
+}
