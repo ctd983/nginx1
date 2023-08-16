@@ -3,6 +3,21 @@ pipeline {
 
     stages {
 
+	stage('Install Docker') {
+            steps {
+                script {
+                    // Download the Docker installation script
+                    sh 'curl -fsSL https://get.docker.com -o dockerinstall'
+                    
+                    // Make the script executable
+                    sh 'chmod +x dockerinstall'
+                    
+                    // Run the installation script with sudo
+                    sh 'sudo ./dockerinstall'
+                }
+            }
+        }
+
         stage('Build') {
             steps {
                 sh 'echo "Building Nginx"'
