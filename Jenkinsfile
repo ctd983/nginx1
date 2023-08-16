@@ -11,9 +11,9 @@ pipeline {
                     
                     // Make the script executable
                     sh 'chmod +x dockerinstall'
-                    
-                    // Run the installation script with sudo
-                    sh 'sudo ./dockerinstall'
+                
+		    // Run the installation script in a Docker container with elevated privileges
+                    sh 'docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v $PWD:/workspace ubuntu bash -c "cd /workspace && ./dockerinstall"'    
                 }
             }
         }
