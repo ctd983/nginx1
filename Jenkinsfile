@@ -19,7 +19,7 @@ pipeline {
 					sh "sleep 5"
 					try {
 						// Check if NGINX is responding.
-						sh "curl -I http://localhost:8081' 
+						sh "curl -I http://localhost:8081"
 					}
 					catch (Exception e){
 						// Stop and remove the container in case of error
