@@ -34,16 +34,27 @@ pipeline {
             }
         }
 		stage('Push to Docker Hub') {
-            steps {
-                script {
-                    // Assuming you've stored your Docker Hub credentials in Jenkins under 'DockerHubCredentials'
-                    withDockerRegistry([credentialsId: 'DockerHubCredentials', url: 'https://index.docker.io/v1/']) {
-                        docker.image("nginx1-image:latest").push()
-						sh 'docker image rm nginx1-image'
-                    }
-                }
-            }
-        }
+			steps {
+				script {
+					def imageName = "nginx1-image:latest"
+					
+					// Check if the image exists locally
+					def imageExists = sh(script: "docker images -q ${imageName}", returnStatus: true) == 0
+					if(!imageExists) {
+						error("Image ${imageName} does not exist locally.")
+					}
+		
+					// Push to Docker Hub
+					withDockerRegistry([credentialsId: 'DockerHubCredentials', url: 'https://index.docker.io/v1/']) {
+						docker.image(imageName).push()
+					}
+					
+					// Remove image locally. This will error out if the image is in use by a container.
+					sh "docker image rm ${imageName}"
+				}
+			}
+		}
+
     }
 
     //post {
