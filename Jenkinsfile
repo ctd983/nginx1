@@ -46,17 +46,17 @@ pipeline {
 					
 					// Log in to Docker Hub
 					withCredentials([usernamePassword(credentialsId: 'DockerHubCredentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-						sh "docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}"
+						sh 'docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}'
 					}
 					
 					// Push the image
-					sh "docker push nginx1-image:latest"
+					sh 'docker push nginx1-image:latest'
 					
 					// Log out from Docker Hub
-					sh "docker logout"
+					sh 'docker logout'
 					
 					// Remove image locally. This will error out if the image is in use by a container.
-					sh "docker image rm ${imageName}"
+					sh 'docker image rm ${imageName}'
 				}
 			}
 		}
