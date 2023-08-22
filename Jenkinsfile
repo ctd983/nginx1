@@ -51,11 +51,14 @@ pipeline {
 					
 					// Push the image
 					sh "docker push nginx1-image:latest"
-			
-					// Push to Docker Hub
-					withDockerRegistry([credentialsId: 'DockerHubCredentials', url: 'https://index.docker.io/v1/']) {
-						docker.image(imageName).push()
-					}
+					
+					// Log out from Docker Hub
+					sh "docker logout"
+					
+					//// Push to Docker Hub
+					//withDockerRegistry([credentialsId: 'DockerHubCredentials', url: 'https://index.docker.io/v1/']) {
+					//	docker.image(imageName).push()
+					//}
 					
 					// Remove image locally. This will error out if the image is in use by a container.
 					sh "docker image rm ${imageName}"
