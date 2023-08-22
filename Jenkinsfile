@@ -26,17 +26,19 @@ pipeline {
 						sh 'docker stop $(docker ps -a -q --filter ancestor=nginx1-image)'
 						error("Failed to connect to NGINX. Error: ${e}")
 					}
+					sh 'docker rm -f $(docker ps -a -q --filter ancestor=nginx1-image)'
+					sh 'docker image rm nginx1-image'
                 }
             }
         }
     }
 
-    post {
-        always {
-            // Clean up any resources, if needed
-            sh 'echo Source Code WORK WELL'
-            sh 'docker rm -f $(docker ps -a -q --filter ancestor=nginx1-image)'
-            sh 'docker image rm nginx1-image'
-        }
-    }
+    //post {
+    //    always {
+    //        // Clean up any resources, if needed
+    //        sh 'echo Source Code WORK WELL'
+    //        sh 'docker rm -f $(docker ps -a -q --filter ancestor=nginx1-image)'
+    //        sh 'docker image rm nginx1-image'
+    //    }
+    //}
 }
