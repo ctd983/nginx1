@@ -28,7 +28,7 @@ pipeline {
 						sh "docker image rm 03f1833b5e5e/nginx1-image"
 						error("Failed to connect to NGINX. Error: ${e}")
 					}
-					sh "docker rm -f $(docker ps -a -q --filter ancestor=03f1833b5e5e/nginx1-image)"
+					sh "docker rm -f \$(docker ps -a -q --filter ancestor=03f1833b5e5e/nginx1-image)"
 					
                 }
             }
