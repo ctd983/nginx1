@@ -14,10 +14,9 @@ pipeline {
             steps {
                 // Replace this with your actual check steps
                 sh 'echo "Running checks"'
-                sh 'docker run nginx1-image nginx -t'
+                sh 'docker run -d -p 8081:80 nginx1-image:latest'
                 sh 'sleep 5'
-                sh 'curl -I http://localhost:8080'
-                sh 'curl -I http://localhost:80'
+                sh 'curl -I http://localhost:8081'
             }
         }
     }
