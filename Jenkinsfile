@@ -24,9 +24,8 @@ pipeline {
     post {
         always {
             // Clean up any resources, if needed
-            //sh 'docker rm $(docker ps -a -q --filter ancestor=nginx1-image)'
-            //sh 'docker image rm nginx1-image'
-            echo 'POST'
+            sh 'docker rm $(docker ps -a -q --filter ancestor=nginx1-image)'
+            sh 'docker image rm nginx1-image'
         }
     }
 }
