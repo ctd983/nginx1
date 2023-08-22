@@ -5,7 +5,7 @@ pipeline {
         stage('Build') {
             steps {
                 // Replace this with your actual build steps for Nginx
-                sh "echo "Building Nginx"'
+                sh "echo 'Building Nginx'"
                 sh "docker build -t 03f1833b5e5e/nginx1-image .'
             }
         }
