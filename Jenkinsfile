@@ -6,7 +6,7 @@ pipeline {
             steps {
                 // Replace this with your actual build steps for Nginx
                 sh "echo 'Building Nginx'"
-                sh "docker build -t 03f1833b5e5e/nginx1-image .'
+                sh "docker build -t 03f1833b5e5e/nginx1-image ."
             }
         }
 
@@ -14,7 +14,7 @@ pipeline {
             steps {
 				script {
 					// Replace this with your actual check steps
-					sh "echo "Running checks""
+					sh "echo 'Running checks'"
 					sh "docker run -d -p 8081:80 03f1833b5e5e/nginx1-image:latest"
 					sh "sleep 5"
 					try {
