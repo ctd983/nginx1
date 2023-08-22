@@ -43,7 +43,15 @@ pipeline {
 					if(!imageExists) {
 						error("Image ${imageName} does not exist locally.")
 					}
-		
+					
+					// Log in to Docker Hub
+					withCredentials([usernamePassword(credentialsId: 'DockerHubCredentials', usernameVariable: '03f1833b5e5e', passwordVariable: '2jv9zk|dB3"3do@hVJI?')]) {
+						sh "docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}"
+					}
+					
+					// Push the image
+					sh "docker push nginx1-image:latest"
+			
 					// Push to Docker Hub
 					withDockerRegistry([credentialsId: 'DockerHubCredentials', url: 'https://index.docker.io/v1/']) {
 						docker.image(imageName).push()
