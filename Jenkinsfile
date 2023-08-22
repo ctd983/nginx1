@@ -12,20 +12,21 @@ pipeline {
 
         stage('Check') {
             steps {
-                // Replace this with your actual check steps
-                sh 'echo "Running checks"'
-                sh 'docker run -d -p 8081:80 nginx1-image:latest'
-                sh 'sleep 5'
-                try {
-                     // Check if NGINX is responding
-                     sh 'curl -I http://localhost:8082' 
+				script {
+					// Replace this with your actual check steps
+					sh 'echo "Running checks"'
+					sh 'docker run -d -p 8081:80 nginx1-image:latest'
+					sh 'sleep 5'
+					try {
+						// Check if NGINX is responding
+						sh 'curl -I http://localhost:8082' 
+					}
+					catch (Exception e){
+						// Stop and remove the container in case of error
+						sh 'docker stop $(docker ps -a -q --filter ancestor=nginx1-image)'
+						error("Failed to connect to NGINX. Error: ${e}")
+					}
                 }
-                catch (Exception e){
-                     // Stop and remove the container in case of error
-                     sh 'docker stop $(docker ps -a -q --filter ancestor=nginx1-image)'
-                     error("Failed to connect to NGINX. Error: ${e}")
-                }
-                
             }
         }
     }
