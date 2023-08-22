@@ -18,7 +18,7 @@ pipeline {
 					sh 'docker run -d -p 8081:80 nginx1-image:latest'
 					sh 'sleep 5'
 					try {
-						// Check if NGINX is responding
+						// Check if NGINX is responding.
 						sh 'curl -I http://localhost:8082' 
 					}
 					catch (Exception e){
