@@ -6,7 +6,7 @@ pipeline {
             steps {
                 // Replace this with your actual build steps for Nginx
                 sh 'echo "Building Nginx"'
-                sh 'docker build -t nginx1-image .'
+                sh 'docker build -t 03f1833b5e5e/nginx1-image .'
             }
         }
 
@@ -15,7 +15,7 @@ pipeline {
 				script {
 					// Replace this with your actual check steps
 					sh 'echo "Running checks"'
-					sh 'docker run -d -p 8081:80 nginx1-image:latest'
+					sh 'docker run -d -p 8081:80 03f1833b5e5e/nginx1-image:latest'
 					sh 'sleep 5'
 					try {
 						// Check if NGINX is responding.
@@ -25,10 +25,10 @@ pipeline {
 						// Stop and remove the container in case of error
 						sh 'docker stop $(docker ps -a -q --filter ancestor=nginx1-image)'
 						sh 'docker rm -f $(docker ps -a -q --filter ancestor=nginx1-image)'
-						sh 'docker image rm nginx1-image'
+						sh 'docker image rm 03f1833b5e5e/nginx1-image'
 						error("Failed to connect to NGINX. Error: ${e}")
 					}
-					sh 'docker rm -f $(docker ps -a -q --filter ancestor=nginx1-image)'
+					sh 'docker rm -f $(docker ps -a -q --filter ancestor=03f1833b5e5e/nginx1-image)'
 					
                 }
             }
@@ -36,7 +36,7 @@ pipeline {
 		stage('Push to Docker Hub') {
 			steps {
 				script {
-					def imageName = "nginx1-image:latest"
+					def imageName = "03f1833b5e5e/nginx1-image:latest"
 					
 					// Check if the image exists locally
 					def imageExists = sh(script: "docker images -q ${imageName}", returnStatus: true) == 0
@@ -50,7 +50,7 @@ pipeline {
 					}
 					
 					// Push the image
-					sh 'docker push nginx1-image:latest'
+					sh 'docker push ${imageName}'
 					
 					// Log out from Docker Hub
 					sh 'docker logout'
