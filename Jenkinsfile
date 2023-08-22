@@ -29,7 +29,7 @@ pipeline {
 						error("Failed to connect to NGINX. Error: ${e}")
 					}
 					sh 'docker rm -f $(docker ps -a -q --filter ancestor=nginx1-image)'
-					sh 'docker image rm nginx1-image'
+					
                 }
             }
         }
@@ -39,6 +39,7 @@ pipeline {
                     // Assuming you've stored your Docker Hub credentials in Jenkins under 'DockerHubCredentials'
                     withDockerRegistry([credentialsId: 'DockerHubCredentials', url: 'https://index.docker.io/v1/']) {
                         docker.image("nginx1-image:latest").push()
+						sh 'docker image rm nginx1-image'
                     }
                 }
             }
