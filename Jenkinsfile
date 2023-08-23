@@ -2,64 +2,70 @@ pipeline {
     agent any
 
     stages {
-        stage('Build') {
-            steps {
-                // Replace this with your actual build steps for Nginx
-                sh "echo 'Building Nginx'"
-                sh "docker build -t 03f1833b5e5e/nginx1-image ."
-            }
-        }
+		stage('Build') {
+			steps {
+				script {
+					def imageName = "03f1833b5e5e/nginx1-image"
+					// Assuming the Dockerfile is in the root of the workspace
+					def dockerfile = docker.build(imageName)
+				}
+			}
+		}
 
         stage('Check') {
-            steps {
+			steps {
 				script {
-					// Replace this with your actual check steps
-					sh "echo 'Running checks'"
-					sh "docker run -d -p 8081:80 03f1833b5e5e/nginx1-image:latest"
-					sh "sleep 5"
+					def imageName = "03f1833b5e5e/nginx1-image:latest"
+					def container
+		
+					// Start the container
+					container = docker.run("--name nginx-check-container -d -p 8081:80", imageName)
+		
+					// This "sleep" is to give NGINX some time to start up.
+					// It's not the most reliable method, but alternatives would likely also involve sh steps or external tools.
+					sleep 5
+		
+					// Check if NGINX is responding using httpRequest
 					try {
-						// Check if NGINX is responding.
-						sh "curl -I http://localhost:8081"
-					}
-					catch (Exception e){
-						// Stop and remove the container in case of error
-						sh "docker stop \$(docker ps -a -q --filter ancestor=nginx1-image)"
-						sh "docker rm -f \$(docker ps -a -q --filter ancestor=nginx1-image)"
-						sh "docker image rm 03f1833b5e5e/nginx1-image"
+						// Assuming you've the HTTP Request plugin installed
+						def response = httpRequest "http://localhost:8081"
+						if (response.status != 200) {
+							error("Unexpected response code from NGINX: ${response.status}")
+						}
+					} catch (Exception e) {
+						// Handle any exceptions during the request
+						container.stop()
+						docker.image(imageName).rm()
 						error("Failed to connect to NGINX. Error: ${e}")
 					}
-					sh "docker rm -f \$(docker ps -a -q --filter ancestor=03f1833b5e5e/nginx1-image)"
-					
-                }
-            }
-        }
+		
+					// Cleanup
+					container.stop()
+					container.rm()
+				}
+			}
+		}
+
 		stage('Push to Docker Hub') {
 			steps {
 				script {
 					def imageName = "03f1833b5e5e/nginx1-image:latest"
 					
-					// Check if the image exists locally
-					def imageExists = sh(script: "docker images -q ${imageName}", returnStatus: true) == 0
-					if(!imageExists) {
-						error("Image ${imageName} does not exist locally.")
+					// Using Docker Pipeline plugin for some operations
+					docker.withRegistry('https://index.docker.io/v1/', 'DockerHubCredentials') {
+						
+						// The next step ensures the image exists locally
+						def image = docker.image(imageName)
+						
+						// This will throw an error if the image doesn't exist locally.
+						// No need for a separate check.
+						image.push()
 					}
 					
-					// Log in to Docker Hub
-					withCredentials([usernamePassword(credentialsId: 'DockerHubCredentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-						sh "docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}"
-					}
-					
-					// Push the image
-					sh "docker push ${imageName}"
-					
-					// Log out from Docker Hub
-					sh "docker logout"
-					
-					// Remove image locally. This will error out if the image is in use by a container.
-					sh "docker image rm ${imageName}"
+					// If you still wish to remove the image locally after pushing:
+					docker.image(imageName).rm()
 				}
 			}
 		}
-
-    }
+	}
 }
