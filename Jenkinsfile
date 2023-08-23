@@ -11,6 +11,7 @@ pipeline {
             steps {
                 script {
                     // Build the Docker image
+					echo "Entering Build stage"  // This will print a message to console output
                     docker.build(IMAGE_NAME)
                 }
             }
