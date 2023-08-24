@@ -21,8 +21,8 @@ pipeline {
 					}
 					catch (Exception e){
 						// Stop and remove the container in case of error
-						sh "docker stop \$(docker ps -a -q --filter ancestor=nginx1-image)"
-						sh "docker rm -f \$(docker ps -a -q --filter ancestor=nginx1-image)"
+						sh "docker stop \$(docker ps -a -q --filter ancestor=03f1833b5e5e/nginx1-image)"
+						sh "docker rm -f \$(docker ps -a -q --filter ancestor=03f1833b5e5e/nginx1-image)"
 						sh "docker image rm 03f1833b5e5e/nginx1-image"
 						error("Failed to connect to NGINX. Error: ${e}")
 					}
