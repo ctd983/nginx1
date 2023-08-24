@@ -52,12 +52,15 @@ pipeline {
 		
 		stage('Check if the image exists locally') {
 			steps {
-				def imageExists = sh(script: "docker images -q ${DOCKERHUB_REPO}/${IMAGE_NAME}", returnStatus: true) == 0
-				if(!imageExists) {
-					error("Image ${DOCKERHUB_REPO}/${IMAGE_NAME} does not exist locally.")
+				script {
+					def imageExists = sh(script: '''docker images -q $DOCKERHUB_REPO/$IMAGE_NAME''', returnStatus: true) == 0
+					if (!imageExists) {
+						error("Image $DOCKERHUB_REPO/$IMAGE_NAME does not exist locally.")
+					}
 				}
 			}
 		}
+
 		
         stage('Login to DockerHub') {
 			steps {
