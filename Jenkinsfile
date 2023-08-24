@@ -20,7 +20,7 @@ pipeline {
             steps {
                 script {
                     // Build the Docker image using shell command
-                    sh "docker build -t ${IMAGE_NAME} ."
+                    sh "docker build -t ${DOCKERHUB_REPO}/${IMAGE_NAME} ."
                 }
             }
         }
