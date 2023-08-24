@@ -26,12 +26,13 @@ pipeline {
         }
         
         stage('Login to DockerHub') {
-            steps {
-                withCredentials([string(credentialsId: "${DOCKER_CREDENTIALS}", variable: 'DOCKER_PASSWORD')]) {
-                    sh "docker login -u 03f1833b5e5e -p ${DOCKER_PASSWORD}"  // Replace 'your-dockerhub-username' with your DockerHub username
-                }
-            }
-        }
+			steps {
+				withCredentials([usernamePassword(credentialsId: 'DockerHubCredentials', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+					sh "docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}"
+				}
+			}
+		}
+
         
         stage('Push Docker Image to DockerHub') {
             steps {
