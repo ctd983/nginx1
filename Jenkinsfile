@@ -19,8 +19,16 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    // Build the Docker image
-                    docker.build("${IMAGE_NAME}")
+                    // Build the Docker image using shell command
+                    sh "docker build -t ${IMAGE_NAME} ."
+                }
+            }
+        }
+        
+        stage('Login to DockerHub') {
+            steps {
+                withCredentials([string(credentialsId: "${DOCKER_CREDENTIALS}", variable: 'DOCKER_PASSWORD')]) {
+                    sh "docker login -u 03f1833b5e5e -p ${DOCKER_PASSWORD}"  // Replace 'your-dockerhub-username' with your DockerHub username
                 }
             }
         }
@@ -28,11 +36,8 @@ pipeline {
         stage('Push Docker Image to DockerHub') {
             steps {
                 script {
-                    // Log in to DockerHub
-                    docker.withRegistry('https://registry.hub.docker.com', "${DOCKER_CREDENTIALS}") {
-                        // Push the image to DockerHub
-                        docker.image("${IMAGE_NAME}").push()
-                    }
+                    // Push the image to DockerHub using shell command
+                    sh "docker push ${DOCKERHUB_REPO}/${IMAGE_NAME}"
                 }
             }
         }
