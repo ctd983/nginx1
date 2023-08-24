@@ -4,7 +4,7 @@ pipeline {
     environment {
         // Replace DOCKERHUB_CREDENTIALS with the ID of your DockerHub credentials in Jenkins
         DOCKER_CREDENTIALS = 'DockerHubCredentials'
-        IMAGE_NAME = '03f1833b5e5e/nginx1-image'
+        IMAGE_NAME = 'nginx1-image'
         DOCKERHUB_REPO = '03f1833b5e5e' // Replace with your DockerHub username or organization name
     }
 
